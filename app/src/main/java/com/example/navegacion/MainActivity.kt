@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var db: OrganizatDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,27 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .commit()
         }
 
-        db = Room.databaseBuilder(
-            applicationContext,
-            OrganizatDatabase::class.java, "database-name"
-        ).build()
-
-        // Crear un nuevo usuario y guardarlo en la base de datos
-        lifecycleScope.launch {
-            val newUser = User(username = "newUser", email = "new@example.com", password = "password123")
-            newUser.hashPassword() // Hashea la contraseña antes de guardar
-            insertUser(newUser) // Llama al método para insertar
-        }
-    }
-    private suspend fun insertUser(user: User) {
-        withContext(Dispatchers.IO) {
-            try {
-                db.userDao().insertUser(user) // Inserta el usuario en la base de datos
-                Log.d("InsertUser", "Usuario insertado: $user")
-            } catch (e: Exception) {
-                Log.e("DatabaseError", "Error al insertar usuario", e)
-            }
-        }
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragment: Fragment = when (item.itemId) {

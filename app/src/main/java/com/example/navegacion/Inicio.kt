@@ -5,22 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
-import com.example.navegacion.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.fragment.app.viewModels
 
 class Inicio : Fragment(R.layout.fragment_inicio) {
-    private lateinit var db: OrganizatDatabase
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        db = Room.databaseBuilder(
-            requireContext(),
-            OrganizatDatabase::class.java, "database-name"
-        ).build()
-    }
+    private val userViewModel: UserViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -33,15 +21,12 @@ class Inicio : Fragment(R.layout.fragment_inicio) {
                 .replace(R.id.fragment_container, Item1Fragment())
                 .addToBackStack(null)
                 .commit()
+            userViewModel.insertarUsuario(User(username="HugoCD", email = "hugo@gmail.com", password = "123"))
 
-            lifecycleScope.launch {
-                val userDao = db.userDao()
-                val users: List<User> = withContext(Dispatchers.IO) {
-                    userDao.getAll()
-                }
-                // Aquí puedes usar la lista de usuarios
-                Log.d("Users", users.toString()) // Muestra la lista de usuarios en Logcat
-            }
         }
+            userViewModel.consultarUsuarios { users ->
+            Log.d("Users", users.toString())
+        }
+
     }
 }
