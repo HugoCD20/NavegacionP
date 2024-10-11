@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item android:id="@+id/nav_item_one"
+            android:icon="@drawable/add"
+            android:title="Crear tarea"/>
+        <item android:id="@+id/nav_item_two"
+            android:icon="@drawable/tareas"
+            android:title="Ver Tareas"/>
+        <item android:id="@+id/nav_item_three"
+            android:icon="@drawable/rutina"
+            android:title="Rutina"/>
+    </group>
+    <item android:title="Opciones">
+        <menu>
+            <item android:id="@+id/nav_item_six"
+                android:icon="@drawable/config"
+                android:title="Configuración"/>
+            <item android:id="@+id/nav_item_seven"
+                android:icon="@drawable/login"
+                android:title="login"/>
+        </menu>
+    </item>
+</menu>
