@@ -8,7 +8,6 @@ import android.widget.Button
 import androidx.fragment.app.viewModels
 
 class Inicio : Fragment(R.layout.fragment_inicio) {
-    private val userViewModel: UserViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -21,11 +20,6 @@ class Inicio : Fragment(R.layout.fragment_inicio) {
                 .replace(R.id.fragment_container, Item1Fragment())
                 .addToBackStack(null)
                 .commit()
-            userViewModel.insertarUsuario(User(username="HugoCD", email = "hugo@gmail.com", password = "123"))
-
-        }
-            userViewModel.consultarUsuarios { users ->
-            Log.d("Users", users.toString())
         }
 
     }

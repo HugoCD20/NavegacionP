@@ -15,6 +15,12 @@ interface DAOdb {
     @Query("SELECT * FROM User WHERE id = :userId")
     suspend fun consultarUno(userId: Int): User?
 
+    @Query("SELECT * FROM User WHERE email = :email LIMIT 1")
+    suspend fun getUserByEmail(email: String): User?
+
+    @Query("SELECT * FROM User WHERE username = :username LIMIT 1")
+    suspend fun getUserByUsername(username: String): User?
+
     @Insert
     suspend fun insertUser(user: User) // Cambiar a suspend
 

@@ -1,21 +1,12 @@
 package com.example.navegacion
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import java.util.*
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class Item1Fragment : Fragment(R.layout.fragment_item1) {
@@ -34,7 +25,13 @@ class Item1Fragment : Fragment(R.layout.fragment_item1) {
                     Log.d("User", "Usuario no encontrado") // Maneja el caso en que no se encuentra el usuario
                 }
             }
-
+        }
+        val redireccion: TextView = view.findViewById(R.id.textView6)
+        redireccion.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container,Registro())
+                .addToBackStack(null)
+                .commit()
         }
 
     }

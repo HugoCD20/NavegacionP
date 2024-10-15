@@ -16,7 +16,7 @@ class UserViewModel : ViewModel() {
         db = Room.databaseBuilder(
             MyApplication.getAppContext(), // Reemplaza esto con tu método para obtener el contexto
             OrganizatDatabase::class.java,
-            "database-name"
+            "navegationdb"
         ).build()
     }
     fun consultarUsuarios(onResult: (List<User>) -> Unit) {
@@ -37,18 +37,41 @@ class UserViewModel : ViewModel() {
             onResult(user)
         }
     }
-    fun insertarUsuario(user:User){
-        viewModelScope  .launch {
-            val newUser = user
-            newUser.hashPassword()
+    fun insertarUsuario(user: User, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    db.userDao().insertUser(newUser)
-                    Log.d("InsertUser", "Usuario insertado: $newUser")
+                    val existingEmailUser = db.userDao().getUserByEmail(user.email)
+                    val existingUsernameUser = db.userDao().getUserByUsername(user.username)
+
+                    when {
+                        existingEmailUser != null -> {
+                            withContext(Dispatchers.Main) {
+                                onResult(false, "Correo ya registrado")
+                            }
+                        }
+                        existingUsernameUser != null -> {
+                            withContext(Dispatchers.Main) {
+                                onResult(false, "Nombre de usuario ya registrado")
+                            }
+                        }
+                        else -> {
+                            user.hashPassword()
+                            db.userDao().insertUser(user)
+                            withContext(Dispatchers.Main) {
+                                onResult(true, "Usuario registrado con éxito")
+                            }
+                        }
+                    }
                 } catch (e: Exception) {
                     Log.e("DatabaseError", "Error al insertar usuario", e)
+                    withContext(Dispatchers.Main) {
+                        onResult(false, "Error al registrar usuario")
+                    }
                 }
             }
         }
     }
+
+
 }
