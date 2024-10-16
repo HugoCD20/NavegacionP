@@ -48,6 +48,7 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
     implementation(libs.firebase.auth)
     implementation ("org.mindrot:jbcrypt:0.4")
     val room_version = "2.6.1"

@@ -1,7 +1,6 @@
 package com.example.navegacion
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +36,15 @@ class UserViewModel : ViewModel() {
             onResult(user)
         }
     }
+    fun consultarUsuarioPorEmail(email: String, onResult: (User?) -> Unit) {
+        viewModelScope.launch {
+            val user: User? = withContext(Dispatchers.IO) {
+                db.userDao().getUserByEmail(email)
+            }
+            onResult(user)
+        }
+    }
+
     fun insertarUsuario(user: User, onResult: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

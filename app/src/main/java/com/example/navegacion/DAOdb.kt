@@ -1,11 +1,9 @@
 package com.example.navegacion
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 
 @Dao
 interface DAOdb {
@@ -20,6 +18,7 @@ interface DAOdb {
 
     @Query("SELECT * FROM User WHERE username = :username LIMIT 1")
     suspend fun getUserByUsername(username: String): User?
+
 
     @Insert
     suspend fun insertUser(user: User) // Cambiar a suspend

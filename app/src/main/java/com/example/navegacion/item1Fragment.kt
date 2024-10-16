@@ -1,39 +1,94 @@
 package com.example.navegacion
 
 import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-
+import org.mindrot.jbcrypt.BCrypt
 
 class Item1Fragment : Fragment(R.layout.fragment_item1) {
     private val userViewModel: UserViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val boton1: Button=view.findViewById(R.id.botonI)
+        val boton1: Button = view.findViewById(R.id.botonI)
+        val emailE: EditText = view.findViewById(R.id.email2)
+        val passwordE: EditText = view.findViewById(R.id.password1)
 
+        // Botón de inicio de sesión
         boton1.setOnClickListener {
-            val id = 1 // ID del usuario que deseas consultar
-            userViewModel.consultarUsuario(id) { user ->
-                user?.let {
-                    Log.d("User", it.toString()) // Muestra el usuario encontrado
-                } ?: run {
-                    Log.d("User", "Usuario no encontrado") // Maneja el caso en que no se encuentra el usuario
-                }
+            val email = emailE.text.toString()
+            val password = passwordE.text.toString()
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                loginUser(email, password) // Inicia sesión
+            } else {
+                Toast.makeText(requireContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Redirección al fragmento de registro
         val redireccion: TextView = view.findViewById(R.id.textView6)
         redireccion.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container,Registro())
+                .replace(R.id.fragment_container, Registro())
                 .addToBackStack(null)
                 .commit()
         }
-
     }
+
+    // Método para autenticar al usuario usando Room
+    private fun loginUser(email: String, password: String) {
+        userViewModel.consultarUsuarioPorEmail(email) { user ->
+            if (user != null && BCrypt.checkpw(password, user.password)) {
+                Log.d("LoginActivity", "Login exitoso")
+
+                // Guardar el correo del usuario en SharedPreferences
+                val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", 0)
+                with(sharedPreferences.edit()) {
+                    putString("user_email", email)
+                    apply()
+                }
+
+                goToMainActivity() // Redirige al siguiente fragmento
+            } else {
+                Log.w("LoginActivity", "Error de autenticación")
+                Toast.makeText(requireContext(), "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    // Navega al siguiente fragmento después del inicio de sesión
+    private fun goToMainActivity() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, inicio2())
+            .commit()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", 0)
+        val userEmail = sharedPreferences.getString("user_email", null)
+
+        if (userEmail != null) {
+            Log.d("LoginActivity", "Sesión ya iniciada con: $userEmail")
+            goToMainActivity() // Usuario ya autenticado
+        }
+    }
+
+    /* de esta manera se cierra la sesion
+    *     val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", 0)
+    with(sharedPreferences.edit()) {
+        clear() // Elimina todos los datos guardados
+        apply()
+    }*/
 
 }
