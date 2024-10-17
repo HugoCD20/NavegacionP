@@ -9,7 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.navigation.NavigationView
 import org.mindrot.jbcrypt.BCrypt
 
 class Item1Fragment : Fragment(R.layout.fragment_item1) {
