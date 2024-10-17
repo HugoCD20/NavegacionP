@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.navigation.NavigationView
 import org.mindrot.jbcrypt.BCrypt
 
 class Item1Fragment : Fragment(R.layout.fragment_item1) {
@@ -42,6 +43,11 @@ class Item1Fragment : Fragment(R.layout.fragment_item1) {
                 .commit()
         }
     }
+    private fun restartActivity() {
+        val intent = requireActivity().intent
+        requireActivity().finish()
+        startActivity(intent)
+    }
 
     // Método para autenticar al usuario usando Room
     private fun loginUser(email: String, password: String) {
@@ -55,8 +61,9 @@ class Item1Fragment : Fragment(R.layout.fragment_item1) {
                     putString("user_email", email)
                     apply()
                 }
-
-                goToMainActivity() // Redirige al siguiente fragmento
+                (activity as? MainActivity)?.updateMenuTitle("Logout")
+                restartActivity()
+                //goToMainActivity() // Redirige al siguiente fragmento
             } else {
                 Log.w("LoginActivity", "Error de autenticación")
                 Toast.makeText(requireContext(), "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show()
@@ -83,12 +90,5 @@ class Item1Fragment : Fragment(R.layout.fragment_item1) {
             goToMainActivity() // Usuario ya autenticado
         }
     }
-
-    /* de esta manera se cierra la sesion
-    *     val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", 0)
-    with(sharedPreferences.edit()) {
-        clear() // Elimina todos los datos guardados
-        apply()
-    }*/
 
 }

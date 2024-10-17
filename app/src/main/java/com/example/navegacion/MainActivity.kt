@@ -2,7 +2,9 @@ package com.example.navegacion
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
+    private var inicio_de_sesion: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,24 +42,101 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .commit()
         }
 
+
+        if (savedInstanceState == null) {
+            checkUserSession()
+        }
     }
+    override fun onStart() {
+        super.onStart()
+        checkUserSession() // Verificar la sesión cada vez que se inicie la actividad
+    }
+    private fun checkUserSession() {
+        val sharedPreferences = getSharedPreferences("user_prefs", 0)
+        val userEmail = sharedPreferences.getString("user_email", null)
+
+        if (userEmail != null) {
+            Log.d("MainActivity", "Sesión ya iniciada con: $userEmail")
+            goToMainFragment() // Redirigir al fragmento principal
+        } else {
+            goToLoginFragment() // Redirigir al login si no hay sesión activa
+        }
+    }
+
+    private fun goToMainFragment() {
+        inicio_de_sesion=true
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        val menu = navigationView.menu
+        val loginItem = menu.findItem(R.id.nav_item_seven)
+        loginItem?.title = "Logout"
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, inicio2())
+            .commit()
+    }
+
+    private fun goToLoginFragment() {
+        inicio_de_sesion=false
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        val menu = navigationView.menu
+        val loginItem = menu.findItem(R.id.nav_item_seven)
+        loginItem?.title = "Login"
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, Inicio())
+            .commit()
+    }
+    fun updateMenuTitle(newTitle: String) {
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val menu = navigationView.menu
+        val loginItem = menu.findItem(R.id.nav_item_seven)
+        loginItem.title = newTitle // Cambia el título del ítem
+    }
+
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragment: Fragment = when (item.itemId) {
-            R.id.nav_item_one -> Item1Fragment()
+            R.id.nav_item_seven -> Item1Fragment()
             R.id.nav_item_two -> Item2Fragment()
             R.id.nav_item_three -> Item3Fragment()
-            else -> Item1Fragment() // Fragmento por defecto
+            else -> if (inicio_de_sesion) inicio2() else Inicio()
         }
 
-        supportFragmentManager.popBackStack()
+
+        // Verificamos si se selecciona el Item1Fragment y si la sesión está activa
+        if (fragment is Item1Fragment && inicio_de_sesion) {
+            // Limpiar SharedPreferences para cerrar la sesión
+            val sharedPreferences = getSharedPreferences("user_prefs", 0)
+            with(sharedPreferences.edit()) {
+                clear() // Borra todos los datos guardados
+                apply()
+            }
+
+            // Mostrar mensaje de cierre de sesión
+            Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+
+            // Cambiar el título del menú a "Login"
+            val navigationView = findViewById<NavigationView>(R.id.nav_view)
+            val menu = navigationView.menu
+            val loginItem = menu.findItem(R.id.nav_item_seven)
+            loginItem.title = "Login" // Actualiza el título
+
+            // Redirigir al fragmento de inicio de sesión
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, Inicio())
+                .commit()
+            inicio_de_sesion=false
+            drawer.closeDrawer(GravityCompat.START)
+            return true // Detenemos aquí para evitar re-carga del fragmento
+        }
+
+        // Si no es el Item1Fragment, continuar con la navegación normal
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
             .commit()
 
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
+
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
