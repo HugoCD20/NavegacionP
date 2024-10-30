@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun goToMainFragment() {
-        inicio_de_sesion=true
+        inicio_de_sesion = true
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         val menu = navigationView.menu
         val loginItem = menu.findItem(R.id.nav_item_seven)
@@ -97,11 +97,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_item_seven -> Item1Fragment()
             R.id.nav_item_two -> Item2Fragment()
             R.id.nav_item_three -> Item3Fragment()
+            R.id.nav_item_six -> configuracion()
             else -> if (inicio_de_sesion) inicio2() else Inicio()
         }
 
+        if(fragment !is Item1Fragment && fragment !is configuracion && !inicio_de_sesion){
+            supportFragmentManager.popBackStack()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container,Item1Fragment())
+                .addToBackStack(null).commit()
+            drawer.closeDrawer(GravityCompat.START)
+            return true
+        }
 
-        // Verificamos si se selecciona el Item1Fragment y si la sesión está activa
         if (fragment is Item1Fragment && inicio_de_sesion) {
             // Limpiar SharedPreferences para cerrar la sesión
             val sharedPreferences = getSharedPreferences("user_prefs", 0)
