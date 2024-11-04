@@ -94,6 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragment: Fragment = when (item.itemId) {
+            R.id.nav_item_one -> Registro_task_firs()
             R.id.nav_item_seven -> Item1Fragment()
             R.id.nav_item_two -> Item2Fragment()
             R.id.nav_item_three -> Item3Fragment()

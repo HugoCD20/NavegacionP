@@ -27,14 +27,14 @@
         android:layout_width="318dp"
         android:layout_height="317dp"
         android:background="#2DE0CFF8"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintBottom_toTopOf="@+id/Agregar_tarea"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/Agregar_tarea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="72dp"

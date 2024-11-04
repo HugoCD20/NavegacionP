@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.navegacion"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -51,6 +51,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation(libs.firebase.auth)
     implementation ("org.mindrot:jbcrypt:0.4")
+    implementation(libs.androidx.compose.material.core)
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version") // Para Kotlin
