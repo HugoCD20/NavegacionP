@@ -1,7 +1,6 @@
 package com.example.navegacion
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.AdapterView
@@ -12,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.fragment.app.setFragmentResultListener
 import android.widget.Toast
-import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 
 class Registro_task_second : Fragment(R.layout.fragment_registro_task_second) {
