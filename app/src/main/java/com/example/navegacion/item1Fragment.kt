@@ -58,6 +58,7 @@ class Item1Fragment : Fragment(R.layout.fragment_item1) {
                 val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", 0)
                 with(sharedPreferences.edit()) {
                     putString("user_email", email)
+                    putInt("user_id",user.id)
                     apply()
                 }
                 (activity as? MainActivity)?.updateMenuTitle("Logout")
